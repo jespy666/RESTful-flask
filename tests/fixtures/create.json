@@ -1,0 +1,14 @@
+{
+  "valid": {
+    "title": "Valid title",
+    "description": "Valid description"
+  },
+  "existed": {
+    "title": "Task 1",
+    "description": "Some description"
+  },
+  "empty": {
+    "title": "",
+    "description": ""
+  }
+}
