@@ -1,4 +1,4 @@
-from .settings import app_config
+from .settings import BASE_DIR
 
 
-__all__ = ('app_config',)
+__all__ = ('BASE_DIR',)

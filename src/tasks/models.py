@@ -1,6 +1,6 @@
-from sqlalchemy import String
+from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.sqlite import TIMESTAMP
+# from sqlalchemy.dialects.sqlite import TIMESTAMP
 
 from datetime import datetime
 
@@ -16,14 +16,16 @@ class Task(Base):
         unique=False
     )
     created_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP,
+        DateTime,
         nullable=False,
+        unique=False,
         default=datetime.utcnow
     )
     updated_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP,
-        nullable=False,
-        default=datetime.utcnow,
+        DateTime,
+        nullable=True,
+        unique=False,
+        default=None,
         onupdate=datetime.utcnow
     )
 
@@ -33,5 +35,5 @@ class Task(Base):
             'title': self.title,
             'description': self.description,
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None  # noqa: E501
         }

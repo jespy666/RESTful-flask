@@ -1,12 +1,28 @@
-from flask import Flask
-from src.tasks.routes import tasks_bp
+from flask_restful import Api
+from flask import Flask, Blueprint
+
+from config import BASE_DIR
+from src.tasks.routes import DirectTasks, ParametrizeTasks
 
 
-def main():
+def create_app(db_url: str) -> Flask:
     app = Flask(__name__)
-    app.register_blueprint(tasks_bp, url_prefix='/tasks')
-    app.run(debug=True)
+    api_bp = Blueprint('api', __name__)
+    api = Api(api_bp)
+    api.add_resource(
+        DirectTasks,
+        '/tasks',
+        resource_class_kwargs={'db_url': db_url}
+    )
+    api.add_resource(
+        ParametrizeTasks,
+        '/tasks/<int:task_id>',
+        resource_class_kwargs={'db_url': db_url}
+    )
+    app.register_blueprint(api_bp)
+    return app
 
 
 if __name__ == '__main__':
-    main()
+    app_ = create_app(f'sqlite:///{BASE_DIR}/dev.db')
+    app_.run(debug=True)

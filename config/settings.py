@@ -20,10 +20,3 @@ class AppConfig:
     def get_connection_uri(self) -> str:
         return self.sqlalchemy_database_uri
 
-
-app_config = (
-    AppConfig(
-        os.getenv('SECRET_KEY'),
-        f'sqlite:///{BASE_DIR}/dev.db'
-    )
-)
