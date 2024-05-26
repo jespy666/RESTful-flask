@@ -1,0 +1,7 @@
+/venv
+/.env
+__pycache__/
+dev.db
+.git/
+.gitignore
+.idea
