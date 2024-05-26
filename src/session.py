@@ -2,7 +2,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
 
-
 class SessionFactory:
 
     def __init__(self, db_url: str) -> None:

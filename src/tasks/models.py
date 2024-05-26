@@ -1,10 +1,9 @@
 from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-# from sqlalchemy.dialects.sqlite import TIMESTAMP
 
 from datetime import datetime
 
-from src.models import Base
+from ..models import Base
 
 
 class Task(Base):

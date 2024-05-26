@@ -1,5 +1,3 @@
-import unittest
-
 from sqlalchemy import func
 
 from tests.test_setup import AppTestCase
@@ -136,7 +134,3 @@ class TestEmptyTasks(AppTestCase):
         response = self.app.get('/tasks')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json, [])
-
-
-if __name__ == '__main__':
-    unittest.main()

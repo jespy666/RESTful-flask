@@ -6,14 +6,15 @@ from flask_restful import Resource
 from sqlalchemy import select, update, delete
 from sqlalchemy.orm import Session
 
-from src.tasks.models import Task
-from src.session import SessionFactory
-from src.tasks.validators import validate_task
+from .models import Task
+from ..session import SessionFactory
+from .validators import validate_task
 
 
 class DirectTasks(Resource, SessionFactory):
 
     def __init__(self, **kwargs) -> None:
+        # provide Database URL for SQLAlchemy session
         db_url: str = kwargs.get('db_url')
         super().__init__(db_url=db_url)
 
@@ -31,6 +32,7 @@ class DirectTasks(Resource, SessionFactory):
             return jsonify({"error": "validation error"})
         stmt = select(Task).where(Task.title == data.get('title'))
         task: Task | None = session.scalar(stmt)
+        # check if task with unique Title name existed
         if task:
             return jsonify({"error": "task with that title are already exists"})  # noqa: E501
         new_task = Task(**data)
@@ -43,6 +45,7 @@ class DirectTasks(Resource, SessionFactory):
 class ParametrizeTasks(Resource, SessionFactory):
 
     def __init__(self, **kwargs: Any) -> None:
+        # provide Database URL for SQLAlchemy session
         db_url: str = kwargs.get('db_url')
         super().__init__(db_url=db_url)
 
@@ -51,6 +54,7 @@ class ParametrizeTasks(Resource, SessionFactory):
         stmt = select(Task).where(Task.id == task_id)
         task: Task | None = session.scalar(stmt)
         session.close()
+        # check if task exist
         if task:
             return jsonify(task.to_dict())
         return jsonify({"error": "task does not exist"})
@@ -62,6 +66,7 @@ class ParametrizeTasks(Resource, SessionFactory):
         session: Session = super().get_session()
         stmt1 = select(Task).where(Task.id == task_id)
         task: Task | None = session.scalar(stmt1)
+        # check if task exist
         if not task:
             return jsonify({"error": "task does not exist"})
         stmt2 = update(Task).where(Task.id == task_id).values(**params)
@@ -74,6 +79,7 @@ class ParametrizeTasks(Resource, SessionFactory):
         session: Session = super().get_session()
         stmt1 = select(Task).where(Task.id == task_id)
         task: Task | None = session.scalar(stmt1)
+        # check if task exist
         if not task:
             return jsonify({"error": "task does not exist"})
         stmt2 = delete(Task).where(Task.id == task_id)

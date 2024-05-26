@@ -7,7 +7,7 @@ from alembic import config, command
 from sqlalchemy import func
 
 from src.session import SessionFactory
-from src.app import create_app
+from api import create_app
 from src.tasks.models import Task
 
 from tests.fixture_loader import load_fixtures
@@ -18,6 +18,8 @@ from config import BASE_DIR
 class AppTestCase(TestCase):
 
     def setUp(self) -> None:
+        os.environ['TEST'] = 'True'
+
         self.db_fd, self.db_path = tempfile.mkstemp()
         self.db_url = f"sqlite:///{self.db_path}"
 
