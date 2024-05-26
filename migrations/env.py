@@ -5,6 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from config import AppConfig
+
 
 config = context.config
 
@@ -16,9 +18,9 @@ if config.config_file_name is not None:
 from src import Base  # noqa: E402
 target_metadata = Base.metadata
 
-
-from config import BASE_DIR  # noqa: E402
-config.set_main_option('sqlalchemy.url', f'sqlite:///{BASE_DIR}/dev.db')
+import os  # noqa: E402
+if not os.getenv('TEST') == 'True':
+    config.set_main_option('sqlalchemy.url', AppConfig().get_connection_uri())
 
 
 def run_migrations_offline() -> None:
