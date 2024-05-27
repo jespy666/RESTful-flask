@@ -10,5 +10,14 @@
   "empty": {
     "title": "",
     "description": ""
+  },
+  "only_title": {
+    "title": "only title",
+    "description": ""
+  },
+  "extra_params": {
+    "title": "valid title 1",
+    "description": "smth",
+    "created_at": "2024-05-27T10:15:30.123456"
   }
 }

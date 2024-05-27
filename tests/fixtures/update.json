@@ -10,5 +10,16 @@
   "empty": {
     "title": "",
     "description": ""
+  },
+  "only_desc": {
+    "description": "only desc"
+  },
+  "extra_params": {
+    "title": "good",
+    "extra_param": "valid value"
+  },
+  "long_title": {
+    "title": "dfghjkl;';lkjhgfghjkl;lkjhgfghuiopoiuytrftyuiop;lkjhghjkl;.l,kmjnhbvbnm,.,lkmjnhbgvfghjplkjhghjklkjnhbgvghnjkl;l.,mnbvbnjkl,kmnb",
+    "description": "valid value"
   }
 }

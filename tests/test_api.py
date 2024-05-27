@@ -53,11 +53,24 @@ class TestCreateTask(AppTestCase):
         self.assertEqual(session.query(func.count(Task.id)).scalar(), 4)
         session.close()
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['title'], 'Valid title')
+
+    def test_create_with_only_title(self) -> None:
+        data = self.created_cases['only_title']
+        response = self.app.post('/tasks', json=data)
+        session = self.session_factory.get_session()
+        self.assertEqual(session.query(func.count(Task.id)).scalar(), 4)
+        session.close()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['title'], 'only title')
 
     def test_create_with_empty_body(self) -> None:
         data = self.created_cases['empty']
         response = self.app.post('/tasks', json=data)
-        self.assertEqual(response.json['error'], "validation error")
+        self.assertEqual(
+            response.json['error'],
+            "title cannot be empty"
+        )
         session = self.session_factory.get_session()
         self.assertEqual(session.query(func.count(Task.id)).scalar(), 3)
         session.close()
@@ -73,6 +86,18 @@ class TestCreateTask(AppTestCase):
         self.assertEqual(
             response.json['error'],
             'task with that title are already exists'
+        )
+
+    def test_create_with_extra_params(self) -> None:
+        data = self.created_cases['extra_params']
+        response = self.app.post('/tasks', json=data)
+        session = self.session_factory.get_session()
+        self.assertEqual(session.query(func.count(Task.id)).scalar(), 3)
+        session.close()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json['error'],
+            'invalid keys'
         )
 
 
@@ -94,17 +119,41 @@ class TestUpdateTask(AppTestCase):
             "New description"
         )
 
+    def test_update_only_description(self) -> None:
+        data = self.updated_cases['only_desc']
+        response = self.app.put('/tasks/2', json=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json['description'],
+            "only desc"
+        )
+
+    def test_update_with_extra_params(self) -> None:
+        data = self.updated_cases['extra_params']
+        response = self.app.put('/tasks/2', json=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['error'], 'invalid keys')
+
     def test_update_with_empty_fields(self) -> None:
         data = self.updated_cases['empty']
         response = self.app.put('/tasks/2', json=data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json['error'], 'validation error')
+        self.assertEqual(
+            response.json['error'],
+            'title cannot be empty'
+        )
 
     def test_update_non_existent_task(self) -> None:
         data = self.updated_cases['not_exist']
         response = self.app.put('/tasks/999', json=data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['error'], 'task does not exist')
+
+    def test_update_with_too_long_title(self) -> None:
+        data = self.updated_cases['long_title']
+        response = self.app.put('/tasks/999', json=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['error'], 'title too long')
 
 
 class TestDeleteTask(AppTestCase):
