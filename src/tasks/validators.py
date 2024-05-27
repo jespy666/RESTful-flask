@@ -1,15 +1,34 @@
-from .models import Task
+from functools import wraps
+from typing import Callable
+
+from flask import request, jsonify, Response
 
 
-def validate_task(data: dict) -> bool:
-    # check if data Model has all given params provided in request body
-    if not all(hasattr(Task, name) for name in data.keys()):
-        return False
-    title, description = data.get('title'), data.get('description')
-    # check if request body has all required params
-    if not title or not description:
-        return False
-    # check title length
-    if len(title) > 32:
-        return False
-    return True
+def validate_request_params(func: Callable) -> Callable:
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> Response:
+        # get request body params
+        data: dict = request.json
+        # define valid params
+        valid_params = {'title', 'description'}
+        # check if request body params has extra keys (params)
+        if not set(data.keys()).issubset(valid_params):
+            return jsonify({"error": "invalid keys"})
+        # also check for extra keys (params)
+        if len(data) > 2:
+            return jsonify({"error": "too many keys"})
+        title, description = data.get('title'), data.get('description')
+        # title can't be empty ({"title": ""})
+        if title == '':
+            return jsonify({"error": "title cannot be empty"})
+        # for created case, check title in params
+        if request.method == 'POST':
+            if not title:
+                return jsonify({"error": "title cannot be empty"})
+        # check for title length
+        if title:
+            if len(title) > 32:
+                return jsonify({"error": "title too long"})
+        # passing through if OK
+        return func(*args, **kwargs)
+    return wrapper
