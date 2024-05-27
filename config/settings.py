@@ -6,8 +6,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -18,6 +16,7 @@ class AppConfig:
 
     def __post_init__(self) -> None:
         load_dotenv()
+        # load secret key from .env
         self.secret_key = os.getenv('SECRET_KEY')
 
     @staticmethod

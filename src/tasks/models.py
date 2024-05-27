@@ -8,7 +8,11 @@ from ..models import Base
 
 class Task(Base):
 
-    title: Mapped[str] = mapped_column(String(32), unique=True)
+    title: Mapped[str] = mapped_column(
+        String(32),
+        unique=True,
+        nullable=False
+    )
     description: Mapped[str] = mapped_column(
         String(250),
         nullable=True,
@@ -32,7 +36,7 @@ class Task(Base):
         return {
             'id': self.id,
             'title': self.title,
-            'description': self.description,
+            'description': self.description if self.description else '',
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None  # noqa: E501
+            'updated_at': self.updated_at.isoformat() if self.updated_at else ''  # noqa: E501
         }
